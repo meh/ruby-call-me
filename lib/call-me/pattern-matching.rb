@@ -21,11 +21,23 @@ class Module
 
 		define_method name do |*args, &block|
 			pattern_matched.each {|signature, body|
-				if signature.is_a?(Proc)
-					return body.bind(self).call(*args, &block) if instance_exec *args, &signature
+				return body.bind(self).call(*args, &block) if (if signature.is_a?(Proc)
+					if !body.parameters.empty? && signature.parameters.empty?
+						names     = body.parameters.map { |p| p[1] }
+						arguments = args.dup
+
+						if names.last.nil?
+							names[-1]                   = :rest
+							arguments[names.length - 1] = arguments.pop(names.length)
+						end
+
+						Struct.new(*names).new(*arguments).instance_exec &signature
+					else
+						instance_exec *args, &signature
+					end
 				else
-					return body.bind(self).call(*args, &block) if signature == args
-				end
+					signature == args
+				end)
 			}
 
 			return pattern_matched[:default].bind(self).call(*args, &block) if pattern_matched[:default]
@@ -51,11 +63,11 @@ class Module
 	def define_pattern_matched (name, default = nil, matchers)
 		define_method name do |*args|
 			matchers.each {|signature, body|
-				if signature.is_a?(Proc)
-					return instance_exec *args, &body if signature.call(*args)
+				return instance_exec *args, &body if (if signature.is_a?(Proc)
+					signature.call(*args)
 				else
-					return instance_exec *args, &body if (signature.is_a?(Array) ? signature : [signature]) == args
-				end
+					(signature.is_a?(Array) ? signature : [signature]) == args
+				end)
 			}
 
 			return instance_exec *args, &default if default
