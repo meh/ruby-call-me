@@ -85,7 +85,7 @@ value on `nil` OR make the optionals explicit and give them a value
 
 overloading
 -----------
-Stupid and ugly overloading
+Stupid and ugly overloading.
 
 Some examples:
 

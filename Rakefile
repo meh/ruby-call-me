@@ -8,4 +8,5 @@ task :test do
 
 	sh 'rspec memoize_spec.rb --color --format doc'
 	sh 'rspec named_spec.rb --color --format doc'
+	sh 'rspec overload_spec.rb --color --format doc'
 end
