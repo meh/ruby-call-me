@@ -8,8 +8,43 @@
 # 0. You just DO WHAT THE FUCK YOU WANT TO.
 #++
 
+require 'refining'
+
 class Module
 	private
+
+	def __pattern_match (name)
+		pattern_matched = (__pattern_matched__[name] ||= {})
+		pattern_matched[@__to_pattern_match__ || :default] = instance_method(name)
+
+		remove_instance_variable :@__to_pattern_match__ if @__to_pattern_match__
+
+		define_method name do |*args, &block|
+			pattern_matched.each {|signature, body|
+				if signature.is_a?(Proc)
+					return body.bind(self).call(*args, &block) if instance_exec *args, &signature
+				else
+					return body.bind(self).call(*args, &block) if signature == args
+				end
+			}
+
+			return pattern_matched[:default].bind(self).call(*args, &block) if pattern_matched[:default]
+
+			raise ArgumentError, "non-exhaustive patterns"
+		end
+	end
+
+	def __pattern_matched__
+		@__pattern_matched__ ||= {}
+	end
+
+	def is_pattern_matched? (name)
+		__pattern_matched__.has_key?(name)
+	end
+
+	def def_pattern (*sign)
+		@__to_pattern_match__ = sign.first.is_a?(Proc) ? sign.first : sign
+	end
 
 	public
 

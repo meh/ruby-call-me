@@ -110,3 +110,25 @@ l.lol 2     # 4
 l.lol "lol" # "lollol"
 l.lol       # exception: ArgumentError: the arguments don't match any signature
 ```
+
+pattern matching
+----------------
+
+Some examples:
+
+```ruby
+require 'call-me/pattern-matching'
+
+class LOL
+  def_pattern 0
+  def factorial (n)
+    1
+  end
+
+  def factorial (n)
+    n * factorial(n - 1)
+  end
+end
+
+LOL.new.factorial(2) # 24
+```
