@@ -17,11 +17,11 @@ class Module
 		overloaded = (__overloaded__[name] ||= {})
 		overloaded[@__to_overload__ || :default] = instance_method(name)
 
-		remove_instance_variable :@__to_overload__
+		remove_instance_variable :@__to_overload__ if @__to_overload__
 
 		define_method name do |*args, &block|
 			overloaded.each {|signature, body|
-				next if signature == :default || signature.each_with_index.any? {|klass, index|
+				next if signature == :default || signature.length != args.length || signature.each_with_index.any? {|klass, index|
 					!args[index].is_a?(klass)
 				}
 
