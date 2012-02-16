@@ -81,7 +81,7 @@ class Object
 		end
 
 		nil
-	end; alias singleton_memoize singleton_memoize
+	end
 
 	# Clear the memoize cache completely or only for the method +name+
 	def memoize_clear (name = nil)
@@ -90,12 +90,12 @@ class Object
 		else
 			memoize_cache.clear
 		end
-	end; alias memoize_clear memoize_clear
+	end
 
 	# Get the memoization cache
 	def memoize_cache
 		@__memoize_cache__ ||= Hash.new { |h, k| h[k] = {} }
-	end; alias memoize_cache memoize_cache
+	end
 
 	private
 
