@@ -1,6 +1,6 @@
 Gem::Specification.new {|s|
 	s.name         = 'call-me'
-	s.version      = '0.0.2.1'
+	s.version      = '0.0.2.2'
 	s.author       = 'meh.'
 	s.email        = 'meh@paranoici.org'
 	s.homepage     = 'http://github.com/meh/ruby-call-me'
